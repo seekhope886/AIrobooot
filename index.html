@@ -23,10 +23,13 @@
     });
 
     client.on("connect", () => console.log("MQTT WebSocket connected"));
+    document.write("<h1>這是用 JS 輸出的文字</h1>");
 
     function gpio(pin,state){
         const msg = JSON.stringify({pin:pin,state:state});
         client.publish("esp32/gpio/control", msg);
+        document.write(msg);
+
     }
     </script>
 </body>
