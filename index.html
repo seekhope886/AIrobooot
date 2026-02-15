@@ -10,6 +10,11 @@
 <h1>ESP32 AHT20 即時溫溼度</h1>
 
 <div id="data">等待資料中...</div>
+<a href="/sensor">查看溫溼度</a>
+    
+    <h2>GPIO 控制</h2>
+    <button onclick="gpio(2,1)">GPIO2 ON</button>
+    <button onclick="gpio(2,0)">GPIO2 OFF</button>
 
 <script>
 
@@ -32,6 +37,10 @@ client.on("message", function (topic, message) {
         "濕度: " + data.hum + " %";
 });
 
+    function gpio(pin,state){
+        const msg = JSON.stringify({pin:pin,state:state});
+        client.publish("esp32/gpio/control", msg);
+    }    
 </script>
 </body>
 </html>
