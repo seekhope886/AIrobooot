@@ -16,7 +16,7 @@
 <button onclick="gpio(8,0)">GPIO2 OFF</button>
 
 <script>
-const IS_ESP32 = location.hostname !== "seekyhope886.github.io"; 
+const IS_ESP32 = location.protocol === "http:"; 
 // ESP32 內部網頁 hostname != GitHub Pages
 
 let client;
