@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AHT20 Sensor</title>
+</head>
+<body>
+    <h1>AHT20 溫溼度資料</h1>
+    <div id="data">讀取中...</div>
+
+    <script>
+        function loadData() {
+            fetch("/data")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("data").innerHTML =
+                    "溫度: " + data.temp + " °C<br>" +
+                    "濕度: " + data.hum + " %";
+            });
+        }
+
+        setInterval(loadData, 10000);
+        loadData();
+    </script>
+</body>
+</html>
