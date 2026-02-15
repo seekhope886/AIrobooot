@@ -1,46 +1,51 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ESP32 雲端溫溼度</title>
+<title>ESP32-C3 Web</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
-
 <body>
-<h1>ESP32 AHT20 即時溫溼度</h1>
-
-<div id="data">等待資料中...</div>
+<h1>ESP32-C3 Web</h1>
+<img src="image.jpg" width="300">
+<br><br>
 <a href="sensor.html">查看溫溼度</a>
-    
-    <h2>GPIO 控制</h2>
-    <button onclick="gpio(2,1)">GPIO2 ON</button>
-    <button onclick="gpio(2,0)">GPIO2 OFF</button>
+
+<h2>GPIO 控制</h2>
+<button onclick="gpio(2,1)">GPIO2 ON</button>
+<button onclick="gpio(2,0)">GPIO2 OFF</button>
 
 <script>
+const IS_ESP32 = location.hostname !== "seekyhope886.github.io"; 
+// ESP32 內部網頁 hostname != GitHub Pages
 
-// HiveMQ WebSocket 連線
-const client = mqtt.connect("wss://b04357396fdc4b2f976f3ea149c6c19c.s1.eu.hivemq.cloud:8884/mqtt", {
+let client;
+
+// 外部 (GitHub Pages) 用 HiveMQ WebSocket
+if(!IS_ESP32){
+    client = mqtt.connect("wss://b04357396fdc4b2f976f3ea149c6c19c.s1.eu.hivemq.cloud:8884/mqtt", {
     username: "esp32c3sm01",
     password: "aHt20262"
-});
+    });
+    client.on("connect", ()=>console.log("MQTT WebSocket connected"));
+} else {
+    console.log("ESP32 瀏覽器端，直接連 ESP32 本地");
+}
 
-client.on("connect", function () {
-    console.log("MQTT 已連線");
-    client.subscribe("esp32/aht20");
-});
-
-client.on("message", function (topic, message) {
-    const data = JSON.parse(message.toString());
-
-    document.getElementById("data").innerHTML =
-        "溫度: " + data.temp + " °C<br>" +
-        "濕度: " + data.hum + " %";
-});
-
-    function gpio(pin,state){
+function gpio(pin,state){
+    if(!IS_ESP32){
         const msg = JSON.stringify({pin:pin,state:state});
         client.publish("esp32/gpio/control", msg);
-    }    
+    } else {
+        // ESP32 本地網頁直接用 fetch API 呼叫 ESP32 的 /gpio
+        fetch(`/gpio?pin=${pin}&state=${state}`)
+        .then(r=>r.text())
+        .then(console.log);
+    }
+}
 </script>
 </body>
 </html>
+
+
