@@ -1,26 +1,48 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>AHT20 Sensor</title>
+<meta charset="UTF-8">
+<title>AHT20 Sensor</title>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
-    <h1>AHT20 溫溼度資料</h1>
-    <div id="data">讀取中...</div>
+<h1>AHT20 溫溼度資料</h1>
+<div id="data">讀取中...</div>
 
-    <script>
-        function loadData() {
-            fetch("/data")
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("data").innerHTML =
-                    "溫度: " + data.temp + " °C<br>" +
-                    "濕度: " + data.hum + " %";
-            });
-        }
+<script>
+const IS_ESP32 = location.hostname !== "seekhope886.github.io";
 
-        setInterval(loadData, 10000);
-        loadData();
-    </script>
+let client;
+
+if(!IS_ESP32){
+    // GitHub Pages 透過 MQTT WebSocket
+    client = mqtt.connect("wss://b04357396fdc4b2f976f3ea149c6c19c.s1.eu.hivemq.cloud:8884/mqtt", {
+        username: "esp32c3sm01",
+        password: "aHt20262"
+    });
+    client.on("connect", ()=>{
+        console.log("MQTT WebSocket connected");
+        client.subscribe("esp32/aht20");
+    });
+    client.on("message", (topic,message)=>{
+        const data = JSON.parse(message.toString());
+        document.getElementById("data").innerHTML =
+            "溫度: "+data.temp+" °C<br>濕度: "+data.hum+" %";
+    });
+} else {
+    // ESP32 本地網頁，直接 fetch /data
+    function loadData(){
+        fetch("/data")
+        .then(r=>r.json())
+        .then(data=>{
+            document.getElementById("data").innerHTML =
+                "溫度: "+data.temp+" °C<br>濕度: "+data.hum+" %";
+        });
+    }
+    loadData();
+    setInterval(loadData,10000);
+}
+</script>
 </body>
 </html>
