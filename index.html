@@ -7,13 +7,13 @@
 </head>
 <body>
     <h1>ESP32-C3 WebServer</h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/ESP32.jpg" width="300">
+    <img src="image.jpg" width="300">
     <br><br>
     <a href="sensor.html">查看溫溼度</a>
 
     <h2>GPIO 控制</h2>
-    <button onclick="gpio(2,1)">GPIO2 ON</button>
-    <button onclick="gpio(2,0)">GPIO2 OFF</button>
+    <button onclick="gpio(8,1)">GPIO8 ON</button>
+    <button onclick="gpio(8,0)">GPIO8 OFF</button>
 
     <script>
     const client = mqtt.connect("wss://b04357396fdc4b2f976f3ea149c6c19c.s1.eu.hivemq.cloud:8884/mqtt", {
