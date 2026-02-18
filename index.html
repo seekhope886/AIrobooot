@@ -23,7 +23,7 @@ let client;
 
 // 外部 (GitHub Pages) 用 HiveMQ WebSocket
 if(!IS_ESP32){
-    client = mqtt.connect("wss://b04357396fdc4b2f976f3ea149c6c19c.s1.eu.hivemq.cloud:8884/mqtt", {
+    client = mqtt.connect("wss://.s1.eu.hivemq.cloud:8884/mqtt", {
     username: "esp32c3sm01",
     password: "aHt20262"
     });
